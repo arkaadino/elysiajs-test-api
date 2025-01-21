@@ -1,15 +1,15 @@
 import { Elysia } from "elysia";
 import sequelize from "./db";
-import statusesAPI from "./api/statusesAPI"; // Match the existing file name
-import categoriesAPI from "./api/categoriesAPI"; // Match the existing file name
+import statusesApi from "./api/statusesApi"; // Match the existing file name
+import categoriesApi from "./api/categoriesApi"; // Match the existing file name
 
 const app = new Elysia();
 
 app.get("/", () => "Hello Elysia");
 
 // Use the API routes
-app.use(statusesAPI);
-app.use(categoriesAPI);
+app.use(statusesApi);
+app.use(categoriesApi);
 
 sequelize.authenticate().then(() => {
     console.log('✅ Database terhubung. Memulai server...');
