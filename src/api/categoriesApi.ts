@@ -23,8 +23,9 @@ app.get("/master/categories", async () => {
 
     if (category.length === 0){
       return {
-        code: 500,
+        code: 404,
         message: "Data categories tidak dapat ditemukan",
+        data: [],
       };  
     }
     return {
@@ -49,17 +50,14 @@ interface CategoriesRequestBody {
   is_active?: number;
 }
 
-app.post("/master/categories", async (req) => {
+app.post("/master/categories", async ({error, body}) => {
   try {
     // Cast req.body ke tipe StatusRequestBody
-    const { name, is_active }: CategoriesRequestBody = req.body as CategoriesRequestBody;  // Ambil data dari request body
+    const { name, is_active }: CategoriesRequestBody = body as CategoriesRequestBody;  // Ambil data dari request body
 
     // Validasi data
-    if (!name) {
-      return {
-        code: 400,
-        message: "Nama category wajib diisi",  // Jika nama tidak ada
-      };
+    if (!body || Object.keys(body).length === 0) {
+      return error(400, "Nama status tidak boleh kosong");
     }
 
     // Definisikan objek yang hanya berisi kolom yang dapat diisi (name, is_active)
@@ -72,7 +70,7 @@ app.post("/master/categories", async (req) => {
     const category = await Category.create(categorydata);
 
     return {
-      code: 201,
+      code: 200,
       message: "Data category berhasil ditambahkan",
       data: category,  // Kembalikan data status yang baru dibuat
     };
@@ -88,18 +86,15 @@ app.post("/master/categories", async (req) => {
 // PATCH - Edit Status
 
 // PATCH - Edit Category
-app.patch("/master/categories/:id", async (req) => {
+app.patch("/master/categories/:id", async ({error, params,body}) => {
   try {
-    const id = req.params.id; // Ambil ID dari parameter URL
-    const { name, is_active }: Partial<CategoriesRequestBody> = req.body as CategoriesRequestBody;
+    const id = params.id; // Ambil ID dari parameter URL
+    const { name, is_active }: Partial<CategoriesRequestBody> = body as CategoriesRequestBody;
 
     // Validasi ID
     const category = await Category.findByPk(id);
     if (!category) {
-      return {
-        code: 404,
-        message: "Data category tidak ditemukan", // Jika ID tidak ditemukan
-      };
+      return error(400, "Id tidak dapat ditemukan!");
     }
 
     // Update data
@@ -124,17 +119,14 @@ app.patch("/master/categories/:id", async (req) => {
 // SOFT DELETE - Hapus Status
 
 // SOFT DELETE - Hapus Category
-app.delete("/master/categories/:id", async (req) => {
+app.delete("/master/categories/:id", async ({error, params}) => {
   try {
-    const id = req.params.id; // Ambil ID dari parameter URL
+    const id = params.id; // Ambil ID dari parameter URL
 
     // Validasi ID
     const category = await Category.findByPk(id);
     if (!category) {
-      return {
-        code: 404,
-        message: "Data category tidak ditemukan", // Jika ID tidak ditemukan
-      };
+      return error(400, "Id tidak dapat ditemukan!");
     }
 
     // Soft delete dengan mengisi deleted_at

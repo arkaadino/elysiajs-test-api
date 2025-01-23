@@ -19,7 +19,7 @@ async function connectAndSyncDB() {
         console.log('Koneksi database berhasil');
 
         // Sinkronisasi model
-        await sequelize.sync; 
+        await sequelize.sync(); // Corrected to call the sync method
         console.log('Sinkronisasi model berhasil');
     } catch (error) {
         console.error('Gagal menghubungkan atau menyinkronkan database:', error);

@@ -13,8 +13,10 @@ app.use(categoriesApi);
 
 sequelize.authenticate().then(() => {
     console.log('✅ Database terhubung. Memulai server...');
-    app.listen(3000);
+    const server = app.listen(3001);
     console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`);
 }).catch(err => {
     console.error('❌ Gagal menghubungkan database:', err);
 });
+
+export default app;
